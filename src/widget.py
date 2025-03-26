@@ -1,6 +1,7 @@
-from src.masks import get_mask_card_number, get_mask_account
 import re
 from datetime import datetime
+
+from src.masks import get_mask_card_number, get_mask_account
 
 
 def mask_account_card(info: str) -> str:
@@ -16,29 +17,33 @@ def mask_account_card(info: str) -> str:
     if not numbers:
         return "Некорректный формат данных"
 
-    number = numbers[0]  # Берём первую найденную группу цифр
+    number = numbers[0]
 
-    # Определяем тип по ключевым словам
-    if "счет" in info.lower():  # Если в строке есть слово "счет"
-        masked_number = get_mask_account(number)
-    else:  # В противном случае предполагаем, что это карта
-        masked_number = get_mask_card_number(number)
+    if "счет" in info.lower():
+        try:
+            return get_mask_account(number)
+        except ValueError:
+            return "Некорректный формат данных"
+    else:
+        try:
+            return get_mask_card_number(number)
+        except ValueError:
+            return "Некорректный формат данных"
 
 
 def get_date(date_str: str) -> str:
     """
-    Преобразует дату из формата 'YYYY-MM-DDTHH:MM:SS.mmmmmm' в формат 'ДД.ММ.ГГГГ'.
+    Преобразует дату из формата 'YYYY-MM-DDTHH:MM:SS' в формат 'DD.MM.YYYY'.
 
-    :param date_str: Строка с датой в формате 'YYYY-MM-DDTHH:MM:SS.mmmmmm'
-    :return: Строка с датой в формате 'ДД.ММ.ГГГГ'
+    :param date_str: Строка с датой в формате ISO.
+    :return: Строка с датой в формате 'DD.MM.YYYY'.
+    :raises ValueError: Если формат даты неверный.
     """
+    if not date_str or not isinstance(date_str, str):
+        return "Некорректный формат даты"
+
     try:
-        # Парсим входную строку в объект datetime
         date_obj = datetime.fromisoformat(date_str)
-
-        # Форматируем дату в нужный формат 'ДД.ММ.ГГГГ'
-        formatted_date = date_obj.strftime("%d.%m.%Y")
-        return formatted_date
-
+        return date_obj.strftime("%d.%m.%Y")
     except ValueError:
         return "Некорректный формат даты"
