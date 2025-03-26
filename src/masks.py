@@ -1,34 +1,35 @@
-from typing import Union
-
-
 def get_mask_card_number(card_number: str) -> str:
     """
-    Маскирует номер карты в формате XXXX XX** **** XXXX.
+    Маскирует номер карты.
+    Формат: первые 4 цифры, затем 2 цифры **, затем ****, затем последние 4 цифры.
 
-    :param card_number: Строка с номером карты (16 цифр)
+    :param card_number: Номер карты (строка из 16 цифр)
     :return: Замаскированный номер карты
+    :raises ValueError: Если номер карты имеет недопустимый формат
     """
+    if not isinstance(card_number, str) or not card_number.strip():
+        raise ValueError("Неверный формат номера карты")
+
     if not card_number.isdigit() or len(card_number) != 16:
-        return "Некорректный номер карты"
+        raise ValueError("Неверный формат номера карты")
 
-    first_six = card_number[:6]  # Первые 6 цифр
-    last_four = card_number[-4:]  # Последние 4 цифры
-
-    masked_part = "**" + "****"  # Маска для средней части
-    result = f"{first_six[:4]} {first_six[4:6]}{masked_part} {last_four}"
-    return result
+    return f"{card_number[:4]} {card_number[4:6]}** **** {card_number[-4:]}"
 
 
 def get_mask_account(account_number: str) -> str:
     """
-    Маскирует номер счета в формате **XXXX.
+    Маскирует номер счета.
+    Формат: ** + последние 4 цифры.
 
-    :param account_number: Строка с номером счета (может быть больше 4 цифр)
+    :param account_number: Номер счета (строка из цифр)
     :return: Замаскированный номер счета
+    :raises ValueError: Если номер счета имеет недопустимый формат
     """
-    if not account_number.isdigit():
-        return "Некорректный номер счета"
+    if not isinstance(account_number, str) or not account_number.strip():
+        raise ValueError("Неверный формат номера счета")
 
-    last_four = account_number[-4:]  # Последние 4 цифры
-    result = f"**{last_four}"
-    return result
+    if not account_number.isdigit() or len(account_number) < 4:
+        raise ValueError("Неверный формат номера счета")
+
+    return f"**{account_number[-4:]}"
+
