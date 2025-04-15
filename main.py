@@ -13,3 +13,9 @@ if __name__ == "__main__":
     print(get_date("2024-03-11T02:26:18.671407"))  # Вывод: "11.03.2024"
     print(get_date("2023-12-25T15:45:30.123456"))  # Вывод: "25.12.2023"
     print(get_date("invalid-date-format"))          # Вывод: "Некорректный формат даты"
+
+from src.utils import read_json_file
+
+file_path = "data/operations.json"
+transactions = read_json_file(file_path)
+print(transactions)
