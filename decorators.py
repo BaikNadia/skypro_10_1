@@ -2,12 +2,14 @@ import functools
 import logging
 import os
 
+
 def log(filename=None):
     """
     Декоратор для логирования начала, конца и результатов выполнения функции.
 
     :param filename: Имя файла для записи логов (если None, логи выводятся в консоль).
     """
+
     def decorator(func):
         @functools.wraps(func)
         def wrapper(*args, **kwargs):
@@ -45,11 +47,12 @@ def log(filename=None):
             except Exception as e:
                 # Логируем ошибку
                 logger.error(f"Ошибка при выполнении функции {func.__name__}. "
-                            f"Тип ошибки: {type(e).__name__}, Аргументы: args={args}, kwargs={kwargs}, Сообщение: {str(e)}")
+                             f"Тип ошибки: {type(e).__name__}, Аргументы: args={args}, kwargs={kwargs}, Сообщение: {str(e)}")
                 raise  # Передаем исключение дальше
             finally:
                 # Удаляем обработчик после выполнения функции
                 logger.removeHandler(handler)
 
         return wrapper
+
     return decorator
