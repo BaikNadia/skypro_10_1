@@ -2,6 +2,11 @@ import os
 import json
 import requests
 from dotenv import load_dotenv
+from src.logging_config import setup_logger
+
+# Создаем логгер для модуля utils
+logger = setup_logger("utils")
+
 
 def read_json_file(file_path: str) -> list:
     """
@@ -10,19 +15,26 @@ def read_json_file(file_path: str) -> list:
     :param file_path: Путь к JSON-файлу.
     :return: Список словарей с данными о транзакциях или пустой список при ошибках.
     """
+    logger.info(f"Чтение JSON-файла: {file_path}")
+
     if not os.path.exists(file_path):
+        logger.error(f"Файл не найден: {file_path}")
         return []  # Если файл не существует, возвращаем пустой список
 
     try:
         with open(file_path, "r", encoding="utf-8") as file:
             data = json.load(file)
             if isinstance(data, list):  # Проверяем, что данные — это список
+                logger.info(f"Успешно прочитано {len(data)} транзакций из файла: {file_path}")
+
                 return data
             else:
-                return []  # Если данные не являются списком, возвращаем пустой список
-    except (json.JSONDecodeError, ValueError):
-        return []  # Если файл поврежден или пустой, возвращаем пустой список
+                logger.error(f"Некорректный формат данных в файле: {file_path}")
 
+                return []
+    except (json.JSONDecodeError, ValueError) as e:
+        logger.error(f"Ошибка чтения JSON-файла: {file_path}. Подробности: {str(e)}")
+        return []
 
 def convert_currency(transaction: dict) -> float:
     """
