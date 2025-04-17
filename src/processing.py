@@ -18,9 +18,8 @@ transactions = [
 filtered_transactions = filter_by_state(transactions, state='EXECUTED')
 print(filtered_transactions)
 
-
-
 from datetime import datetime
+
 
 def sort_by_date(transactions, ascending=True):
     """
@@ -36,6 +35,7 @@ def sort_by_date(transactions, ascending=True):
         reverse=not ascending
     )
 
+
 transactions = [
     {'id': 1, 'state': 'EXECUTED', 'date': '2023-01-01'},
     {'id': 2, 'state': 'PENDING', 'date': '2023-01-02'},
@@ -44,4 +44,3 @@ transactions = [
 
 sorted_transactions = sort_by_date(transactions, ascending=False)
 print(sorted_transactions)
-
