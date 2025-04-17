@@ -4,33 +4,36 @@ import requests
 from dotenv import load_dotenv
 from src.logging_config import setup_logger
 
+
 # Создаем логгер для модуля utils
 logger = setup_logger("utils")
 
-
-def read_json_file(file_path: str) -> list:
+def read_json_file() -> list:
     """
-    Читает JSON-файл и возвращает список словарей с данными о финансовых транзакциях.
+    Читает JSON-файл с транзакциями из переменной окружения OPERATIONS_FILE.
 
-    :param file_path: Путь к JSON-файлу.
     :return: Список словарей с данными о транзакциях или пустой список при ошибках.
     """
-    logger.info(f"Чтение JSON-файла: {file_path}")
+    file_path = os.getenv("OPERATIONS_FILE")  # Берём путь из переменной окружения
+
+    if not file_path:
+        logger.critical("Переменная окружения OPERATIONS_FILE не задана.")
+        return []
+
+    logger.debug(f"Попытка чтения JSON-файла по пути: {file_path}")
 
     if not os.path.exists(file_path):
         logger.error(f"Файл не найден: {file_path}")
-        return []  # Если файл не существует, возвращаем пустой список
+        return []
 
     try:
         with open(file_path, "r", encoding="utf-8") as file:
             data = json.load(file)
             if isinstance(data, list):  # Проверяем, что данные — это список
                 logger.info(f"Успешно прочитано {len(data)} транзакций из файла: {file_path}")
-
                 return data
             else:
-                logger.error(f"Некорректный формат данных в файле: {file_path}")
-
+                logger.error(f"Некорректный формат данных в файле: {file_path}. Ожидался список.")
                 return []
     except (json.JSONDecodeError, ValueError) as e:
         logger.error(f"Ошибка чтения JSON-файла: {file_path}. Подробности: {str(e)}")
