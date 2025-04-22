@@ -1,9 +1,7 @@
-from src.utils import read_json_file
-from src.masks import get_mask_card_number, get_mask_account
 from dotenv import load_dotenv
-import os
 
-
+from src.masks import get_mask_card_number, get_mask_account
+from src.utils import read_json_file
 
 # Загружаем переменные окружения
 load_dotenv()
@@ -28,3 +26,29 @@ if __name__ == "__main__":
                     print("Ошибка маскировки счета")
     else:
         print("Не удалось прочитать транзакции.")
+
+from src.file_reader import read_csv_file
+
+if __name__ == "__main__":
+    file_path = "data/transactions.csv"
+    transactions = read_csv_file(file_path)
+
+    if transactions:
+        print(f"Прочитано {len(transactions)} транзакций из CSV.")
+        for transaction in transactions:
+            print(transaction)
+    else:
+        print("Не удалось прочитать транзакции из CSV.")
+
+from src.file_reader import read_excel_file
+
+if __name__ == "__main__":
+    file_path = "data/transactions.xlsx"
+    transactions = read_excel_file(file_path)
+
+    if transactions:
+        print(f"Прочитано {len(transactions)} транзакций из Excel.")
+        for transaction in transactions:
+            print(transaction)
+    else:
+        print("Не удалось прочитать транзакции из Excel.")
