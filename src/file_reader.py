@@ -1,7 +1,7 @@
 import csv
 import os
-from openpyxl import load_workbook
 
+from openpyxl import load_workbook
 
 
 def read_csv_file(file_path: str) -> list:
@@ -12,18 +12,16 @@ def read_csv_file(file_path: str) -> list:
     :return: Список словарей с транзакциями.
     """
     if not os.path.exists(file_path):
-        print(f"Файл не найден: {file_path}")
-        return []
+        return []  # Возвращаем пустой список, если файл не существует
 
     transactions = []
     try:
         with open(file_path, mode='r', encoding='utf-8') as file:
-            reader = csv.DictReader(file)
+            reader = csv.DictReader(file, delimiter=';')  # Используем разделитель ';'
             for row in reader:
                 transactions.append(row)
-    except Exception as e:
-        print(f"Ошибка чтения CSV-файла: {str(e)}")
-        return []
+    except Exception:
+        return []  # Возвращаем пустой список при ошибке чтения
 
     return transactions
 
