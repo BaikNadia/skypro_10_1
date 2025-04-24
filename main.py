@@ -69,3 +69,46 @@ if __name__ == "__main__":
             print(transaction)
     else:
         print("Не удалось прочитать транзакции из Excel.")
+
+
+from src.file_reader import read_csv_file, read_excel_file
+from src.utils import search_operations_by_description, count_operations_by_category
+
+def main():
+    print("Выберите источник данных:")
+    print("1. CSV-файл")
+    print("2. Excel-файл")
+    choice = input("Введите номер: ")
+
+    if choice == "1":
+        file_path = "data/transactions.csv"
+        operations = read_csv_file(file_path)
+    elif choice == "2":
+        file_path = "data/transactions.xlsx"
+        operations = read_excel_file(file_path)
+    else:
+        print("Неверный выбор.")
+        return
+
+    if not operations:
+        print("Не удалось прочитать операции из файла.")
+        return
+
+    # Поиск операций по описанию
+    search_string = input("Введите строку для поиска в описании: ")
+    search_result = search_operations_by_description(operations, search_string)
+    print(f"Найденные операции по запросу '{search_string}':")
+    for operation in search_result:
+        print(operation)
+
+    # Подсчет операций по категориям
+    category_mapping = {
+        "Перевод между счетами": r"со счета на счет",
+        "Перевод между картами": r"с карты на карту",
+        "Открытие вклада": r"открытие вклада"
+    }
+    count_result = count_operations_by_category(operations, category_mapping)
+    print("Количество операций по категориям:")
+    for category, count in count_result.items():
+        print(f"{category}: {count}")
+

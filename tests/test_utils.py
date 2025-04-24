@@ -1,6 +1,7 @@
-from unittest.mock import patch
 import json
-from src.utils import convert_currency
+from unittest.mock import patch
+
+from src.utils import convert_currency, count_operations_by_category
 from src.utils import read_json_file
 
 
@@ -79,3 +80,52 @@ def test_convert_missing_amount():
     transaction = {"currency": "USD"}  # Отсутствует ключ 'amount'
     result = convert_currency(transaction)
     assert result == 0.0  # Возвращается 0.0 при отсутствии данных
+
+
+from src.utils import search_operations_by_description
+
+
+def test_search_operations_by_description():
+    """
+    Тестирует функцию поиска операций по описанию.
+    """
+    operations = [
+        {"id": "650703", "description": "Перевод организации"},
+        {"id": "3598919", "description": "Перевод с карты на карту"},
+        {"id": "593027", "description": "Перевод с карты на карту"}
+    ]
+
+    result = search_operations_by_description(operations, "организации")
+    assert len(result) == 1
+    assert result[0]["id"] == "650703"
+
+    result = search_operations_by_description(operations, "с карты на карту")
+    assert len(result) == 2
+    assert result[0]["id"] == "3598919"
+    assert result[1]["id"] == "593027"
+
+    result = search_operations_by_description(operations, "неexistent")
+    assert len(result) == 0
+
+
+def test_count_operations_by_category():
+    """
+    Тестирует функцию подсчета операций по категориям.
+    """
+    operations = [
+        {"id": "650703", "description": "Перевод организации"},
+        {"id": "3598919", "description": "Перевод с карты на карту"},
+        {"id": "593027", "description": "Перевод с карты на карту"},
+        {"id": "4816780", "description": "Открытие вклада"}
+    ]
+
+    category_mapping = {
+        "Перевод между счетами": r"со счета на счет",
+        "Перевод между картами": r"с карты на карту",
+        "Открытие вклада": r"открытие вклада"
+    }
+
+    result = count_operations_by_category(operations, category_mapping)
+    assert result["Перевод между картами"] == 2
+    assert result["Открытие вклада"] == 1
+    assert "Перевод между счетами" not in result
