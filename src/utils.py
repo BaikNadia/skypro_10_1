@@ -1,12 +1,14 @@
-import os
 import json
+import os
+
 import requests
 from dotenv import load_dotenv
-from src.logging_config import setup_logger
 
+from src.logging_config import setup_logger
 
 # Создаем логгер для модуля utils
 logger = setup_logger("utils")
+
 
 def read_json_file() -> list:
     """
@@ -39,6 +41,7 @@ def read_json_file() -> list:
         logger.error(f"Ошибка чтения JSON-файла: {file_path}. Подробности: {str(e)}")
         return []
 
+
 def convert_currency(transaction: dict) -> float:
     """
     Конвертирует сумму транзакции из USD или EUR в рубли.
@@ -69,5 +72,6 @@ def convert_currency(transaction: dict) -> float:
         return float(amount) * rub_rate
     except (requests.RequestException, KeyError, ValueError):
         return float(amount)  # При ошибке возвращаем сумму без конвертации
+
 
 load_dotenv()  # Загружаем переменные окружения из .env

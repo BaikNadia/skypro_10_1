@@ -1,4 +1,5 @@
 import pytest
+
 from src.masks import get_mask_card_number, get_mask_account
 
 
@@ -13,6 +14,7 @@ def test_get_mask_card_number_valid(card_number, expected):
     """
     result = get_mask_card_number(card_number)
     assert result == expected, f"Ошибка при маскировании номера {card_number}"
+
 
 # Параметризованные тесты для некорректных номеров карт
 @pytest.mark.parametrize("card_number", [
@@ -34,6 +36,7 @@ def test_get_mask_card_number_invalid(card_number):
         else:
             get_mask_card_number(card_number)
 
+
 # Тестирование граничных случаев
 def test_get_mask_card_number_edge_cases():
     """
@@ -54,7 +57,7 @@ def test_get_mask_card_number_edge_cases():
 @pytest.mark.parametrize("account_number, expected", [
     ("123456789012", "**9012"),  # Корректный номер счета
     ("987654321098", "**1098"),  # Другой корректный номер счета
-    ("1234", "**1234"),         # Минимальная длина (4 символа)
+    ("1234", "**1234"),  # Минимальная длина (4 символа)
 ])
 def test_get_mask_account_valid(account_number, expected):
     """
@@ -63,13 +66,14 @@ def test_get_mask_account_valid(account_number, expected):
     result = get_mask_account(account_number)
     assert result == expected, f"Ошибка при маскировании номера {account_number}"
 
+
 # Параметризованные тесты для некорректных номеров счетов
 @pytest.mark.parametrize("account_number", [
-    "123",          # Недостаточно цифр (меньше 4)
-    "12345X",       # Недопустимый символ (буква X)
-    "",              # Пустая строка
-    "   ",           # Пробельные символы
-    None,            # None вместо строки
+    "123",  # Недостаточно цифр (меньше 4)
+    "12345X",  # Недопустимый символ (буква X)
+    "",  # Пустая строка
+    "   ",  # Пробельные символы
+    None,  # None вместо строки
 ])
 def test_get_mask_account_invalid(account_number):
     """
@@ -81,6 +85,7 @@ def test_get_mask_account_invalid(account_number):
 
         else:
             get_mask_account(account_number)
+
 
 # Тестирование граничных случаев
 def test_get_mask_account_edge_cases():
