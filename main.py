@@ -189,3 +189,10 @@ def main():
             print(f"{from_masked} -> ", end="")
         print(f"{to_masked}")
         print(f"Сумма: {amount} {currency_code}")
+
+if __name__ == "__main__":
+    main()
+
+# data/operations.json
+# data/transaction.csv
+# data/transaction.xlsx

@@ -1,4 +1,5 @@
 import csv
+import json
 import os
 
 from openpyxl import load_workbook
@@ -24,6 +25,7 @@ def read_csv_file(file_path: str) -> list:
         return []  # Возвращаем пустой список при ошибке чтения
 
     return transactions
+
 
 def read_excel_file(file_path: str) -> list:
     """
@@ -55,5 +57,22 @@ def read_excel_file(file_path: str) -> list:
     return transactions
 
 
-def read_json_file():
-    return None
+def read_json_file(file_path: str) -> list:
+    """
+    Считывает финансовые операции из JSON-файла.
+
+    :param file_path: Путь к JSON-файлу.
+    :return: Список словарей с транзакциями.
+    """
+    if not os.path.exists(file_path):
+        return []
+
+    try:
+        with open(file_path, "r", encoding="utf-8") as file:
+            data = json.load(file)
+            if isinstance(data, list):  # Убедимся, что данные — это список
+                return data
+            else:
+                return []
+    except (json.JSONDecodeError, ValueError):
+        return []
