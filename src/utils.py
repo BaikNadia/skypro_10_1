@@ -75,3 +75,40 @@ def convert_currency(transaction: dict) -> float:
 
 
 load_dotenv()  # Загружаем переменные окружения из .env
+
+import re
+from collections import Counter
+
+
+def search_operations_by_description(operations: list, search_string: str) -> list:
+    """
+    Ищет операции, у которых в поле 'description' есть заданная строка.
+
+    :param operations: Список словарей с транзакциями.
+    :param search_string: Строка для поиска.
+    :return: Список словарей с операциями, соответствующими поиску.
+    """
+    result = []
+    pattern = re.compile(re.escape(search_string), re.IGNORECASE)
+    for operation in operations:
+        if "description" in operation and pattern.search(operation["description"]):
+            result.append(operation)
+    return result
+
+
+def count_operations_by_category(operations: list, category_mapping: dict) -> dict:
+    """
+    Подсчитывает количество операций по категориям.
+
+    :param operations: Список словарей с транзакциями.
+    :param category_mapping: Словарь, где ключи — категории, а значения — паттерны для описаний.
+    :return: Словарь с количеством операций по каждой категории.
+    """
+    category_counts = Counter()
+    for operation in operations:
+        if "description" not in operation:
+            continue
+        for category, pattern in category_mapping.items():
+            if re.search(pattern, operation["description"], re.IGNORECASE):
+                category_counts[category] += 1
+    return dict(category_counts)
